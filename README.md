@@ -48,11 +48,11 @@ type Root struct {
 	Auth          Auth
 }
 
+func NewRoot() *Root { return &Root{} }
+
 func (r *Root) SetAuth(auth Auth) {
 	r.Auth = auth
 }
-
-func NewRoot() *Root { return &Root{} }
 
 func (r *Root) SetUserID(userId int) {
 	r.UserID = userId
@@ -123,4 +123,5 @@ func ExampleWrap() {
 	//Output: *genericmw_test.Root: &{SomeRootThing: UserID:5 Auth:{LoggedIn:true}}
 	//*genericmw_test.DifferentRoot: &{UserID:5 Auth:{LoggedIn:true}}
 }
+
 ```
