@@ -93,14 +93,14 @@ func myHandler2(values *DifferentRoot, w http.ResponseWriter, r *http.Request) {
 }
 
 func ExampleMiddlewares() {
-	mw := genericmw.NewMiddlewares[*Root]()
+	mw := genericmw.NewMiddlewares(NewRoot)
 	mw.Use(authMiddleware[*Root])
 	mw.Use(userMiddleware[*Root])
 	mw.Use(rootMiddleware)
 
 	w := httptest.NewRecorder()
 	r := httptest.NewRequest("GET", "/somepath", nil)
-	mw.Wrap(NewRoot, myHandler).ServeHTTP(w, r)
+	mw.Wrap(myHandler).ServeHTTP(w, r)
 
 	// Output: *genericmw_test.Root: &{SomeRootThing:value UserID:5 Auth:{LoggedIn:true}}
 }

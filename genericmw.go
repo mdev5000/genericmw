@@ -13,21 +13,22 @@ func Wrap[T any](newFn func() T, next AppHandler[T]) http.HandlerFunc {
 }
 
 type Middlewares[T any] struct {
+	newFn       func() T
 	middlewares []Middleware[T]
 }
 
-func NewMiddlewares[T any]() *Middlewares[T] {
-	return &Middlewares[T]{}
+func NewMiddlewares[T any](newFn func() T) *Middlewares[T] {
+	return &Middlewares[T]{newFn: newFn}
 }
 
 func (mws *Middlewares[T]) Use(mw Middleware[T]) {
 	mws.middlewares = append(mws.middlewares, mw)
 }
 
-func (mws *Middlewares[T]) Wrap(newFn func() T, handler AppHandler[T]) http.Handler {
+func (mws *Middlewares[T]) Wrap(handler AppHandler[T]) http.Handler {
 	appHandler := handler
 	for _, m := range mws.middlewares {
 		appHandler = m(appHandler)
 	}
-	return Wrap[T](newFn, appHandler)
+	return Wrap[T](mws.newFn, appHandler)
 }
